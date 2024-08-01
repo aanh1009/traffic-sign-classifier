@@ -14,6 +14,7 @@ data_transforms = load_data()
 model = load_model()
 
 def show_classify():
+    st.set_page_config(layout="centered")
     st.title('Traffic Signs Classification')
     st.write("""### Insert a traffic sign to classify""")
     image = st.file_uploader("Choose an image")
