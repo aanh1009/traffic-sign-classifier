@@ -1,7 +1,7 @@
 import streamlit as st
 import pickle
-import torch
 from PIL import Image
+import torch
 def load_data():
     with open('saved_steps.pkl','rb') as file:
         data = pickle.load(file)
