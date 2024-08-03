@@ -33,7 +33,7 @@ For this project, only a 10% portion of the train folder was used for both train
 
 **Training**: Loss ranging from 3.34 (epoch 1/24) to 0.014 (epoch 22/24) and ended at 0.026 (epoch 24/24)
 
-**Testing**: On the testing set with 533 instances, the model correctly classified 473, yielding **88.56% accuracy**
+**Testing**: On the testing set, the model yielded **92% accuracy**
 
 **Classification on real image**
 
