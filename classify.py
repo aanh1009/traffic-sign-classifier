@@ -29,7 +29,7 @@ def show_classify():
         st.image(img)
         img = data_transforms(img)
         label = torch.argmax(model(img.view(-1,3,128,128)))
-        st.subheader(f"This sign seems to be {label}")
+        st.subheader(f"This sign seems to be of label: {label}")
     
     
 
