@@ -1,48 +1,96 @@
-**__A Traffic Sign Classifier for Autonomous Vehicles__** 
+# Traffic‑Sign Classifier
 
-This project is a deep learning model built upon convolutional neural networks (CNNs) and fully connected layers to classify traffic signs in an autonomous vehicle. 
+A PyTorch CNN that recognises 43 German road‑sign classes and a **Streamlit** front‑end to test images in your browser.
 
-**Dataset**
+> **Try the live demo →** https://trafficsigndetector.streamlit.app/
 
-The German Traffic Sign Recognition Benchmark (GTSRB) is a multi-class, single-image classification challenge held at the International Joint Conference on Neural Networks (IJCNN) 2011. The dataset contains metadata file, train.csv and test.csv files, a train folder, and a test folder that contains images and their corresponding classifications.
+---
 
-For this project, only a 10% portion of the train folder was used for both training and testing the classifier. When loaded to the Colab runtime, each image was resized to a (128, 128) array, converted to a tensor, and normalized. The trainset and testset were then created by randomly sampling 80% and 20% of the miniature train folder, both finally loaded as tensor datasets using the DataLoader module.  
+## ✨ Key features
 
+| | |
+|---|---|
+| **State‑of‑the‑art dataset** | Trained on the **GTSRB** benchmark (German Traffic Sign Recognition) – 50 k+ images across 43 classes. |
+| **Light CNN** | 3 × Conv‑BN‑ReLU blocks → MaxPool → Dropout 0.25 → 2 × FC; ~840 k parameters. |
+| **92 % test accuracy** | Achieved after 24 epochs (10 % random subset of training data). |
+| **Optimised TorchScript model** | `model_scripted.pt` loads fast and runs on CPU. |
+| **Streamlit UI** | Upload a JPEG/PNG and get the predicted class & probability in <1 s. |
+| **Colab notebook friendly** | All training code in `model.py`, runnable on GPU. |
 
-**Building The Classifier**
+---
 
-- 3 convolutional layers that take 3 128x128 images as the input and outputs 64 downsized images of size 16x16 (After each convolutional layer, pooling with kernel size equal to 2x2 occurs)
-- A dropout function that drops 25% of the dataset to avoid overfitting
-- 2 fully connected layers that flatten the downsized images and learn to generate classifications.
-  - The first fully connected layer has an input size of 128x(16x16) (128 images of size 16x16) and the ReLU activation function
-  - The second layer has an output size of 43 - representing the probability of each class among the 43 classes.
+## 📊 Model architecture
 
-**Hyperparameters Setting**
+```text
+Input 3×128×128
+ ├─ Conv2d 3→32, k3 • BN • ReLU
+ ├─ MaxPool 2×2
+ ├─ Conv2d 32→64, k3 • BN • ReLU
+ ├─ MaxPool 2×2
+ ├─ Conv2d 64→128, k3 • BN • ReLU
+ ├─ MaxPool 2×2  → 128×16×16
+ ├─ Dropout p=0.25
+ ├─ Flatten → 32768
+ ├─ Linear 32768→512 • ReLU
+ └─ Linear 512→43 ─► Softmax
+```
 
-- Loss function: CrossEntropyLoss()
+---
 
-- Optimizer: Adam 
+## 🚀 Quick start
 
-- Learning rate: 0.0005
+### 1 · Clone & install
 
-- Number of epochs: 24
+```bash
+git clone https://github.com/aanh1009/traffic-sign-classifier.git
+cd traffic-sign-classifier
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt   # torch, torchvision, streamlit, numpy, pillow …
+```
 
-- Batch size: 64
-  
-**Training & Testing**
+### 2 · Run Streamlit app
 
-**Training**: Loss ranging from 3.34 (epoch 1/24) to 0.014 (epoch 22/24) and ended at 0.026 (epoch 24/24)
+```bash
+streamlit run app.py
+```
 
-**Testing**: On the testing set, the model yielded **92% accuracy**
+Open <http://localhost:8501>, upload an image, and see the predicted sign.
 
-**Classification on real image**
+### 3 · Train from scratch (optional)
 
-![image](https://github.com/aanh1009/trafficsignsrecognition/assets/131883807/c12a8716-0d8c-4797-85ac-41e3e8cb4608)
+```bash
+python model.py --epochs 24 --batch 64 --lr 5e-4 \
+               --data_root /path/to/GTSRB
+```
 
-The **supposed class** is 1, the **model's output** is 1
+A scripted model will be saved to `model_scripted.pt` along with `saved_steps.pkl` (label map).
 
-![image](https://github.com/aanh1009/trafficsignsrecognition/assets/131883807/f97d368d-947d-4233-b381-3ead91836867)
+---
 
-The **supposed class** is still 1, the **model's output** is 11. 
+## 🗂 Project layout
 
-We can hypothesize that this image, apart from the traffic sign, also has a name tag, which increases its complexity and makes the mode generate an inaccurate classification
+```
+.
+├─ app.py              # Streamlit front‑end
+├─ classify.py         # CLI inference helper
+├─ model.py            # CNN definition + train loop
+├─ model_scripted.pt   # Ready‑to‑use TorchScript model
+├─ saved_steps.pkl     # Label‑id ↔ class‑name dict
+├─ requirements.txt    # pip deps
+└─ packages.txt        # apt packages for Streamlit sharing (optional)
+```
+
+---
+
+## 🔒 License
+
+MIT © 2025 Tuan Anh Ngo
+
+---
+
+## 🙏 Acknowledgements
+
+* German Traffic Sign Recognition Benchmark (IJCNN 2011) ­– <http://benchmark.ini.rub.de>.
+* PyTorch & TorchVision teams.
+* Streamlit community for easy sharing.
+
